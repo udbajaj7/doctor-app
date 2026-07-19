@@ -39,7 +39,7 @@ dependencies:
   csc_picker:
   url_launcher: ^6.1.10
   introduction_screen: ^3.1.4
-  http: ^0.13.4
+  http: ^1.6.0
   material_design_icons_flutter: ^6.0.7096
   weekday_selector: ^1.0.0
   intro_views_flutter: ^3.2.0
