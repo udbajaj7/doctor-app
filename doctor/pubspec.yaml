@@ -37,7 +37,7 @@ dependencies:
   drawerbehavior: ^2.2.1
   intl: ^0.18.0
   csc_picker:
-  url_launcher: ^6.1.10
+  url_launcher: ^6.3.2
   introduction_screen: ^3.1.4
   http: ^0.13.4
   material_design_icons_flutter: ^6.0.7096
