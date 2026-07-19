@@ -23,6 +23,9 @@
 # Flutter/Dart/Pub related
 **/doc/api/
 **/ios/Flutter/.last_build_id
+/ios/Flutter/ephemeral/
+/ios/Flutter/flutter_export_environment.sh
+/ios/Flutter/Generated.xcconfig
 .dart_tool/
 .flutter-plugins
 .flutter-plugins-dependencies
@@ -44,5 +47,13 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 
-/*.lock
-doctor/pubspec.lock
+# NOTE: pubspec.lock is intentionally committed for this application to make
+# builds reproducible (recommended for apps, unlike reusable packages).
+
+# Environment files (never commit real values; see .env.example)
+.env
+.env.*
+!.env.example
+
+# Test coverage output
+coverage/

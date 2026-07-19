@@ -1,33 +1,44 @@
 import 'package:doctor/Models/DoctorModel.dart';
+import 'package:doctor/config/app_config.dart';
+import 'package:doctor/utils/app_logger.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import '../../../components/urls.dart';
 import 'dart:convert';
+import 'dart:io';
+import 'dart:async';
 
 import '../../../providers/httpClientProvider.dart';
 
 Future<String> logInFuture(String phoneNo, String password) async {
-  var response = await ConnectionService().returnConnection().post(
-      Uri.parse(signInUrl),
-      body: jsonEncode(<String, String>{
-        "phone_number": phoneNo,
-        "password": password,
-        "user_type": "doctor"
-      }),
-      headers: <String, String>{
-        'Accept': '*/*',
-        'User-Agent': 'Thunder Client (https://www.thunderclient.com)',
-        'Content-Type': 'application/json',
-      });
-  print("Login response code : ${response.statusCode}");
+  try {
+    var response = await ConnectionService()
+        .returnConnection()
+        .post(Uri.parse(signInUrl),
+            body: jsonEncode(<String, String>{
+              "phone_number": phoneNo,
+              "password": password,
+              "user_type": "doctor"
+            }),
+            headers: <String, String>{
+              'Accept': '*/*',
+              'User-Agent': 'Thunder Client (https://www.thunderclient.com)',
+              'Content-Type': 'application/json',
+            })
+        .timeout(AppConfig.httpTimeout);
+    logDebug("Login response code : ${response.statusCode}");
 
-  if (response.statusCode == 200) {
-    var responseJson = json.decode(response.body.toString());
-    print(responseJson);
-    return responseJson["id"].toString();
-  } else {
-    var responseJson = json.decode(response.body.toString());
-    return "Error: " + responseJson["message"];
+    if (response.statusCode == 200) {
+      var responseJson = json.decode(response.body.toString());
+      return responseJson["id"].toString();
+    } else {
+      var responseJson = json.decode(response.body.toString());
+      return "Error: " + responseJson["message"];
+    }
+  } on TimeoutException {
+    return "Error: Request timed out. Please try again.";
+  } on SocketException {
+    return "Error: No internet connection.";
   }
 }
 
@@ -40,12 +51,8 @@ Future<String> resendOtp(String phoneNo) async {
         'User-Agent': 'Thunder Client (https://www.thunderclient.com)',
         'Content-Type': 'application/json',
       });
-  print("resend otp ");
-  print(jsonEncode(
-      <String, String>{"phone_number": phoneNo, "user_type": "patient"}));
-  print(response.statusCode);
+  logDebug("resend otp response: ${response.statusCode}");
   var responseJson = json.decode(response.body.toString());
-  print(responseJson["otp"]);
   if (response.statusCode == 200) {
     return "Success";
   } else {
@@ -95,8 +102,7 @@ Future<DoctorModel> getDocInfo(int id) async {
       Uri.parse(getDocInfoUrl),
       body: jsonEncode(<String, int>{"id": id}),
       headers: header);
-  print(header);
-  print("Getting doctor data for id $id ${response.statusCode}");
+  logDebug("Getting doctor data for id $id ${response.statusCode}");
   if (response.statusCode == 200) {
     var responseJson = json.decode(response.body.toString());
     GetInfoResponse getInfoResponse = GetInfoResponse.fromJson(responseJson);

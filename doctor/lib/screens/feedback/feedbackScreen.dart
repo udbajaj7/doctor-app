@@ -1,4 +1,3 @@
-import 'package:doctor/screens/homeScreen/components/accountsScreen.dart';
 import 'package:doctor/screens/homeScreen/homeScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';

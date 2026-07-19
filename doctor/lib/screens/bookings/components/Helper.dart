@@ -2,7 +2,6 @@ import 'dart:convert';
 
 import 'package:doctor/Models/MedicalFiles.dart';
 import 'package:doctor/screens/bookings/components/requests.dart';
-import 'package:doctor/screens/homeScreen/components/requests.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 

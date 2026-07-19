@@ -1,0 +1,25 @@
+version: 2
+updates:
+  - package-ecosystem: "pub"
+    directory: "/doctor"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
+    labels:
+      - "dependencies"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "dependencies"
+      - "ci"
+
+  - package-ecosystem: "gradle"
+    directory: "/doctor/android"
+    schedule:
+      interval: "weekly"
+    labels:
+      - "dependencies"
+      - "android"

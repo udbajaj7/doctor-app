@@ -22,8 +22,6 @@ import 'package:open_file/open_file.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:tuple/tuple.dart';
 
-import '../../../components/urls.dart';
-import '../../../providers/httpClientProvider.dart';
 import 'imageViewer.dart';
 
 class PatientAllBookingsScreen extends StatefulWidget {
@@ -430,20 +428,6 @@ DateTime convertStringToDateTime(String date, int time) {
 
 Future<void> makePhoneCall(String phoneNumber) async {
   await FlutterPhoneDirectCaller.callNumber(phoneNumber);
-}
-
-Future<String> _editPatientDetail(PatientModel patient) async {
-  var response = await ConnectionService().returnConnection().post(
-      Uri.parse(editPatientUrl),
-      headers: header,
-      body: patient.toJson2());
-
-  if (response.statusCode == HttpStatus.ok) {
-    debugPrint(
-        "\n response code for edit profile " + response.statusCode.toString());
-    return response.body;
-  } else
-    return "";
 }
 
 AlertDialog documentDialog(

@@ -2,10 +2,12 @@ import 'dart:convert';
 import 'package:doctor/Models/DoctorModel.dart';
 import 'package:doctor/Models/MetaData.dart';
 import 'package:doctor/Models/currentPatientModel.dart';
+import 'package:doctor/config/app_config.dart';
+import 'package:doctor/utils/app_logger.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-String siteUrl = "https://incue-oep43kcksq-el.a.run.app/";
+String siteUrl = AppConfig.apiBaseUrl;
 
 String getCitiesUrl = siteUrl + "cities/";
 String phoneRegUrl = siteUrl + "send_otp/";
@@ -74,18 +76,29 @@ String timeToString(TimeOfDay timeOfDay) {
 
 late Map<String, String> header;
 
-void initializeHeader() {
-  String? password = prefs.getString("password");
-  String? phNo = prefs.getString("phoneNumber");
-  print("initialize header called $phNo:$password");
-  String basicAuth = 'Basic ' + base64.encode(utf8.encode('$phNo:$password'));
+/// Builds an HTTP Basic auth value from the given credentials.
+///
+/// Extracted as a pure function so it can be unit tested without touching
+/// shared preferences or global state.
+String buildBasicAuth(String? phoneNumber, String? password) {
+  return 'Basic ' + base64.encode(utf8.encode('$phoneNumber:$password'));
+}
 
-  header = <String, String>{
-    'authorization': basicAuth,
+/// Builds the default request headers, including the Basic auth credentials.
+Map<String, String> buildAuthHeaders(String? phoneNumber, String? password) {
+  return <String, String>{
+    'authorization': buildBasicAuth(phoneNumber, password),
     'Accept': '*/*',
     'User-Agent': 'Thunder Client (https://www.thunderclient.com)',
     'Content-Type': 'application/json; charset=UTF-8',
   };
+}
+
+void initializeHeader() {
+  final String? password = prefs.getString("password");
+  final String? phNo = prefs.getString("phoneNumber");
+  logDebug("initializeHeader called");
+  header = buildAuthHeaders(phNo, password);
 }
 
 List<String> docTreatmentsAvailable = List.empty(growable: true);

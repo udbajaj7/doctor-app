@@ -1,5 +1,6 @@
 import 'package:doctor/Models/Appointment.dart';
 import 'package:doctor/providers/appointmentProvider.dart';
+import 'package:doctor/utils/app_logger.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
@@ -70,7 +71,6 @@ Future getCurrentPatients(int docId) async {
       headers: header);
   if (response.statusCode == 200) {
     var jsonResponse = json.decode(response.body.toString());
-    debugPrint(response.body);
     BookedResponse jsonResp = BookedResponse.fromJson(jsonResponse);
     List<DoctorBookingsModel> bookList = jsonResp.bookings;
     List<PatientModel> patList = jsonResp.patients;
@@ -120,14 +120,8 @@ Future<String> endAppointmentButtonPressed(int docId, int? bookingID) async {
             "booking_id": bookingID,
           }),
           headers: header);
-  print("sending patient in API request body");
-  print(endAppointmentUrl);
-
-  print(response.statusCode);
-  print(header);
-  print(response.body);
+  logDebug("endAppointment response: ${response.statusCode}");
   if (response.statusCode == 200) {
-    debugPrint(response.body);
     return "Done";
   } else
     return "Error";
@@ -142,9 +136,8 @@ Future<String> editTreatmentApi(int bookingId, String? treatment) async {
             "booking_id": bookingId,
           }),
           headers: header);
-  print(response.body);
+  logDebug("editTreatment response: ${response.statusCode}");
   if (response.statusCode == 200) {
-    debugPrint(response.body);
     return "Done";
   } else
     return "Error";
@@ -161,17 +154,9 @@ Future<String> sendInButtonPressed(
             "send": nextBookingID,
           }),
           headers: header);
-  print("sending patient in API request body");
-  print(jsonEncode(<String, dynamic>{
-    "doc_id": docId,
-    "current": curr,
-    "send": nextBookingID,
-  }));
-  print(response.statusCode);
+  logDebug("sendInButton response: ${response.statusCode}");
   if (response.statusCode == 200) {
-    debugPrint(response.body);
     return "Done";
-    // Check request
   } else
     return "Error";
 }
@@ -179,20 +164,16 @@ Future<String> sendInButtonPressed(
 Future<String> getBookingQueue(int docId, BuildContext context) async {
   final AppointmentProvider appointmentProvider =
       Provider.of<AppointmentProvider>(context, listen: false);
-  print(docId);
-  print("calling booking queue");
   var response = await http.post(Uri.parse(waitingQueueUrl),
       body: jsonEncode(<String, int>{
         "doc_id": docId,
       }),
       headers: header);
 
-  print(response.statusCode);
-  print(response.body.toString());
+  logDebug("bookingQueue response: ${response.statusCode}");
 
   if (response.statusCode == 200) {
     var jsonResponse = json.decode(response.body.toString());
-    debugPrint(response.body);
     BookedResponse jsonResp = BookedResponse.fromJson(jsonResponse);
     List<DoctorBookingsModel> bookList = jsonResp.bookings;
     List<PatientModel> patList = jsonResp.patients;
@@ -219,7 +200,6 @@ Future<String> getReachedQueue(int docId, BuildContext context) async {
   if (response.statusCode == 200) {
     var currentPatients = await getCurrentPatients(docId);
     var jsonResponse = json.decode(response.body.toString());
-    debugPrint("Reached queue ${response.body}");
     ReachedResponse jsonResp = ReachedResponse.fromJson(jsonResponse);
     List<DoctorBookingsModel> bookList = jsonResp.bookings,
         bookCurr = currentPatients["books"];

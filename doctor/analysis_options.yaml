@@ -1,0 +1,14 @@
+include: package:flutter_lints/flutter.yaml
+
+analyzer:
+  exclude:
+    - "**/*.g.dart"
+    - "**/*.freezed.dart"
+    - build/**
+
+# Lint rules build on the recommended `flutter_lints` set. Legacy `print`
+# usage is reported at info severity (via flutter_lints) rather than as an
+# error, so analysis stays green while new sensitive logging is discouraged.
+linter:
+  rules:
+    - avoid_print

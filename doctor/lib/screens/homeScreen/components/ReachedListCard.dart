@@ -6,7 +6,6 @@ import 'package:skeletonizer/skeletonizer.dart';
 import '../../../Models/DoctorBookings.dart';
 import '../../../Models/PatientModel.dart';
 import '../../../components/size_config.dart';
-import '../../addPatientScreen/AddPatientScreen.dart';
 import 'requests.dart';
 
 class ReachedListCard extends StatelessWidget {
@@ -30,7 +29,6 @@ class ReachedListCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     int _minutes = minutes;
-    TimeOfDay time = computeSlot(int.parse(doctorBookingsModel.slotTime));
     int hours = 0;
     if (_minutes > 59) {
       hours = (_minutes / 60).floor();

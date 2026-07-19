@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:photo_view/photo_view.dart';
 import 'package:pinch_zoom/pinch_zoom.dart';
 
 import '../../../Models/MedicalFiles.dart';

@@ -1,0 +1,73 @@
+name: CI
+
+on:
+  push:
+    branches: [master, main]
+  pull_request:
+    branches: [master, main]
+
+defaults:
+  run:
+    working-directory: doctor
+
+jobs:
+  build:
+    name: Analyze, test & build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 3.16.9
+          channel: stable
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      # Enforce formatting on newly-added, actively-maintained code. The legacy
+      # source predates a formatter and is intentionally excluded to avoid a
+      # large, behavior-neutral reformatting diff.
+      - name: Verify formatting (new code)
+        run: dart format --output=none --set-exit-if-changed lib/config lib/utils test
+
+      # `--no-fatal-infos` keeps info-level lints (e.g. legacy `print` usage)
+      # non-blocking while still failing on warnings and errors.
+      - name: Static analysis
+        run: flutter analyze --no-fatal-infos
+
+      - name: Run tests with coverage
+        run: flutter test --coverage
+
+      - name: Upload coverage artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: doctor/coverage/lcov.info
+          if-no-files-found: warn
+
+      - name: Build web (release)
+        run: flutter build web --release
+
+  audit:
+    name: Dependency audit
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 3.16.9
+          channel: stable
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Check for outdated / vulnerable dependencies
+        run: dart pub outdated

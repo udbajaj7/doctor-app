@@ -102,7 +102,9 @@ doctor-app/
 
 ## Prerequisites
 
-- **Flutter SDK** with Dart `>=2.12.0 <3.0.0` (Flutter 3.x recommended)
+- **Flutter `3.16.9`** (Dart `3.2.x`) — this is the version the dependency set is
+  pinned to and the version CI builds against. Newer Flutter releases currently
+  break some pinned transitive packages (see the committed `pubspec.lock`).
 - **Android Studio** / Xcode for native builds
 - **Firebase CLI** (for web deployment)
 - A configured device, emulator, or simulator
@@ -141,6 +143,9 @@ flutter run -d chrome
 
 # Run on a specific device
 flutter run -d <device_id>
+
+# Point the app at a specific backend (see Environment & Configuration)
+flutter run --dart-define=API_BASE_URL=https://your-backend-host.example.com/
 ```
 
 Build release artifacts:
@@ -156,37 +161,68 @@ flutter build web --release        # Web
 
 ## Environment & Configuration
 
-This project does not use a `.env` file; configuration is compiled in. The primary values to be aware of:
+Runtime configuration is provided at **build time** via Dart compile-time
+variables (`--dart-define`), read in `lib/config/app_config.dart`. Flutter does
+not load `.env` files at runtime; `doctor/.env.example` documents the supported
+variables and their shape (no real secrets).
+
+| Variable | Default | Description |
+| --- | --- | --- |
+| `API_BASE_URL` | `https://incue-oep43kcksq-el.a.run.app/` | Base URL of the INCUE backend API. Must end with a trailing slash. All endpoints derive from it. |
+
+Example:
+
+```bash
+flutter build web --release --dart-define=API_BASE_URL=https://api.example.com/
+```
+
+Other configuration touch points:
 
 | Setting | Location | Description |
 | --- | --- | --- |
-| `siteUrl` | `lib/components/urls.dart` | Base URL of the INCUE backend API (Cloud Run). All endpoints derive from it. |
-| Auth header | `lib/components/urls.dart` (`initializeHeader`) | Basic Auth built from the doctor's phone number + password stored in `shared_preferences`. |
+| Auth header | `lib/components/urls.dart` (`buildAuthHeaders`) | HTTP Basic auth built from the doctor's phone number + password stored in `shared_preferences`. |
 | Session/profile cache | `shared_preferences` (`lib/main.dart`) | Persists `isLoggedIn` and profile fields (name, city, fees, IDs, etc.). |
 | Firebase project | `.firebaserc` | Default Firebase Hosting project (`incue-doctor`). |
 | Android application id | `android/app/build.gradle` | `com.incue.incuedoctor` (targetSdk 33). |
 
-To point the app at a different backend, update `siteUrl` in `lib/components/urls.dart`.
+> Credentials, OTPs, auth headers and full request/response bodies are never
+> logged; diagnostic logging goes through `lib/utils/app_logger.dart`, which is
+> silenced in release builds.
 
 ---
 
 ## Testing
 
-Widget and unit tests live in `test/`. Run them from the `doctor/` directory:
+Unit tests live in `test/unit/` (auth header building, time/slot utilities,
+model JSON parsing, response parsers, and config). Run them from the `doctor/`
+directory:
 
 ```bash
 # Run the full test suite
 flutter test
 
 # Run a single test file
-flutter test test/widget_test.dart
+flutter test test/unit/models_test.dart
 
-# Run with coverage
+# Run with coverage (writes coverage/lcov.info)
 flutter test --coverage
 
 # Static analysis / linting
 flutter analyze
+
+# Formatting (check)
+dart format --output=none --set-exit-if-changed lib/config lib/utils test
 ```
+
+---
+
+## Continuous Integration
+
+GitHub Actions (`.github/workflows/ci.yml`) runs on pushes and pull requests
+targeting `master`/`main` and performs: dependency install, format check,
+static analysis, tests with coverage, a release web build, and a dependency
+audit (`dart pub outdated`). Dependency updates are automated via
+`.github/dependabot.yml` (pub, GitHub Actions, and Gradle).
 
 ---
 

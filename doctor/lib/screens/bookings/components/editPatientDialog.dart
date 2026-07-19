@@ -1,17 +1,13 @@
 import 'package:doctor/screens/bookings/components/requests.dart';
-import 'package:doctor/screens/homeScreen/components/accountsScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:http/http.dart' as http;
 import 'package:loader_overlay/loader_overlay.dart';
 
 import '../../../components/size_config.dart';
-import '../../../components/urls.dart';
 
 import '../../../Models/PatientModel.dart';
-import '../../allPatientScreen/allPatientScreen.dart';
 
 class EditPatAlertDialog extends StatefulWidget {
   final PatientModel patientModel;

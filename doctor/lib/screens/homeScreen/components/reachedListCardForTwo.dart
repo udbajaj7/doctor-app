@@ -7,7 +7,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:skeletonizer/skeletonizer.dart';
 import '../../../Models/DoctorBookings.dart';
 import '../../../Models/PatientModel.dart';
-import '../../addPatientScreen/AddPatientScreen.dart';
 import 'requests.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 
@@ -32,7 +31,6 @@ class _ReachedListCardForTwoState extends State<ReachedListCardForTwo> {
   Widget build(BuildContext context) {
     SizeConfig().init(context);
     int _minutes = widget.minutes;
-    TimeOfDay time = computeSlot(int.parse(widget.d.slotTime));
     int hours = 0;
     if (_minutes > 59) {
       hours = (_minutes / 60).floor();

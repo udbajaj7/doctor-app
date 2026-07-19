@@ -333,19 +333,15 @@ class BookingListCard extends StatelessWidget {
                                                           .loaderOverlay
                                                           .hide();
 
-                                                      String message =
-                                                          "Patient has been marked as reached";
-                                                      if (value
+                                                      if (!value
                                                           .contains("Error")) {
-                                                        message =
-                                                            "Error while marking patient as reached";
-                                                      } else
                                                         appointmentProvider
                                                             .patReached(Appointment(
                                                                 doctorBookingsModel:
                                                                     d,
                                                                 patientModel:
                                                                     p));
+                                                      }
 
                                                       print(
                                                           "Calling refresh parent");

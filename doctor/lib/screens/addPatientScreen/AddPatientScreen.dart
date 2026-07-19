@@ -14,6 +14,7 @@ import 'package:tuple/tuple.dart';
 
 import '../homeScreen/homeScreen.dart';
 
+// ignore: must_be_immutable
 class AddPatientScreen extends StatefulWidget {
   String firstName = "", lastName = "", phoneNumber = "", gender = "Male";
   int? age;
