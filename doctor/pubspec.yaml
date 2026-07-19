@@ -54,7 +54,7 @@ dependencies:
   mailto: ^2.0.0
   flutter_phone_direct_caller: ^2.1.1
   flutter_emoji_feedback: ^0.1.2
-  file_picker: ^5.5.0
+  file_picker: ^11.0.2
   permission_handler: ^11.0.1
   flutter_svg:
   gallery_image_viewer: ^1.2.0
