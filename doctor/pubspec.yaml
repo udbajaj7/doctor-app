@@ -58,7 +58,7 @@ dependencies:
   permission_handler: ^11.0.1
   flutter_svg:
   gallery_image_viewer: ^1.2.0
-  photo_view: ^0.14.0
+  photo_view: ^0.15.0
   open_file: ^3.3.2
   pinch_zoom: ^2.0.0
   skeletonizer: ^0.8.0
