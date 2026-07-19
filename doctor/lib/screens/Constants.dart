@@ -1,0 +1,19 @@
+  List<String> categoriesAvailable = [
+    "Dentist",
+    "Physician",
+    "Physiotherapist",
+    "Opthalmologist",
+    "Urologist",
+    "Cardiologist",
+    "ENT",
+    "Gynaecologist",
+    "Orthopedic",
+    "Paediatrician",
+    "Psychiatrist",
+    "Radiologist",
+    "Neurologist",
+    "Physiotherapist",
+    "Ophthalmologist",
+    "Urologist",
+    "Other"
+  ];
